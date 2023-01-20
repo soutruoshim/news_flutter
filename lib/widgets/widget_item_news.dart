@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'item_news.dart';
+import '../models/top_head_line.dart';
 
 class WidgetItemNews extends StatelessWidget {
   final Articles itemArticle;
@@ -26,7 +26,8 @@ class WidgetItemNews extends StatelessWidget {
         // }
       },
       child: SizedBox(
-        height: 200,
+        height: 100,
+        width: double.infinity,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -35,16 +36,16 @@ class WidgetItemNews extends StatelessWidget {
               child: CachedNetworkImage(
                 imageUrl: itemArticle.urlToImage??"",
                 fit: BoxFit.cover,
-                width: 200,
-                height: 200,
+                width: 100,
+                height: 100,
                 errorWidget: (context, url, error) {
                   return ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
                     child: Image.asset(
                       'assets/images/img_not_found.jpg',
                       fit: BoxFit.cover,
-                      width: 200,
-                      height: 200,
+                      width: 100,
+                      height: 100,
                     ),
                   );
                 },
@@ -54,8 +55,8 @@ class WidgetItemNews extends StatelessWidget {
                     child: Image.asset(
                       'assets/images/img_placeholder.jpg',
                       fit: BoxFit.cover,
-                      width: 200,
-                      height: 200,
+                      width: 100,
+                      height: 100,
                     ),
                   );
                 },
@@ -72,7 +73,7 @@ class WidgetItemNews extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 36,
+                        fontSize: 18,
                       ),
                     ),
                   ),
@@ -80,9 +81,10 @@ class WidgetItemNews extends StatelessWidget {
                       ? Container()
                       : Text(
                     itemArticle.author??"",
+                    maxLines: 1,
                     style: TextStyle(
                       color: Colors.grey,
-                      fontSize: 28,
+                      fontSize: 16,
                     ),
                   ),
                   Row(
@@ -92,23 +94,34 @@ class WidgetItemNews extends StatelessWidget {
                         strPublishedAt,
                         style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 24,
+                          fontSize: 16,
                         ),
                       ),
                       Text(
                         ' | ',
                         style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 28,
+                          fontSize: 16,
                         ),
                       ),
-                      Text(
-                        itemArticle.source!.name??"",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 24,
+                      Flexible(
+                        child: RichText(
+                          overflow: TextOverflow.ellipsis,
+                          strutStyle: StrutStyle(fontSize: 16.0),
+                          text: TextSpan(
+                              style: TextStyle(color: Colors.black),
+                              text: itemArticle.source!.name??""),
                         ),
                       ),
+                      // Text(
+                      //   overflow: TextOverflow.ellipsis,
+                      //   softWrap: true,
+                      //   itemArticle.source!.name??"",
+                      //   style: TextStyle(
+                      //     color: Colors.grey,
+                      //     fontSize: 16,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ],

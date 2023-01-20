@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../pages/category_page.dart';
+import '../pages/bookmark_page.dart';
 import '../pages/group_page.dart';
 import '../pages/news_page.dart';
 class Home extends StatefulWidget {
@@ -14,7 +14,7 @@ class _HomeState extends State<Home> {
   int selectedPageIndex = 0;
   List<Widget> pages = [
     NewsPage(),
-    CategoryPage(),
+    BookmarkPage(),
     GroupPage(),
   ];
   @override
@@ -35,9 +35,9 @@ class _HomeState extends State<Home> {
               label: 'News',
             ),
             NavigationDestination(
-              selectedIcon: Icon(Icons.category),
-              icon: Icon(Icons.category_outlined),
-              label: 'Category',
+              selectedIcon: Icon(Icons.bookmark),
+              icon: Icon(Icons.bookmark_outline),
+              label: 'Bookmarks',
             ),
             NavigationDestination(
               selectedIcon: Icon(Icons.group),

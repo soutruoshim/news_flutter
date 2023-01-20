@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:news_flutter/logics/news_logic.dart';
+import 'package:provider/provider.dart';
+import '../contants/category_list_constant.dart';
 import '../models/category.dart';
-import '../widgets/item_news.dart';
+import '../models/top_head_line.dart';
 import '../widgets/widget_item_news.dart';
 import 'search_page.dart';
 import 'package:intl/intl.dart';
@@ -16,18 +18,7 @@ class NewsPage extends StatefulWidget {
 class _NewsPageState extends State<NewsPage> {
   bool isDarkMode = false;
   var indexCategorySelected = 0;
-  final listCategories = <CategoryNewsModel>[
-    CategoryNewsModel(image: "assets/images/img_business.png", title: 'All'),
-    CategoryNewsModel(
-        image: 'assets/images/img_business.png', title: 'Business'),
-    CategoryNewsModel(
-        image: 'assets/images/img_entertainment.png', title: 'Entertainment'),
-    CategoryNewsModel(image: 'assets/images/img_health.png', title: 'Health'),
-    CategoryNewsModel(image: 'assets/images/img_science.png', title: 'Science'),
-    CategoryNewsModel(image: 'assets/images/img_sport.png', title: 'Sports'),
-    CategoryNewsModel(
-        image: 'assets/images/img_technology.png', title: 'Technology'),
-  ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,42 +36,12 @@ class _NewsPageState extends State<NewsPage> {
             width: double.infinity,
             color: isDarkMode ? null : Color(0xFFEFF5F5),
             padding: EdgeInsets.symmetric(
-              vertical: 24.0,
+              vertical: 16.0,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 48),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text(
-                          'Daily News',
-                          style: TextStyle(
-                            fontSize: 32,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SearchPage()),
-                          );
-                        },
-                        child: Hero(
-                          tag: 'iconSearch',
-                          child: Icon(
-                            Icons.search,
-                            size: 36,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                _header(context),
                 WidgetDateToday(),
                 SizedBox(height: 24),
                 WidgetCategoryNews(
@@ -88,7 +49,7 @@ class _NewsPageState extends State<NewsPage> {
                     indexDefaultSelected: indexCategorySelected),
                 SizedBox(height: 24),
                 Expanded(
-                  child: _buildWidgetContentNewsAndroid()
+                  child: _buildWidgetContentNewsAndroid(context)
                 ),
               ],
             ),
@@ -99,6 +60,39 @@ class _NewsPageState extends State<NewsPage> {
   }
 }
 
+Widget _header(BuildContext context){
+  return  Padding(
+    padding: EdgeInsets.symmetric(horizontal: 16),
+    child: Row(
+      children: <Widget>[
+        Expanded(
+          child: Text(
+            'Enterprise News',
+            style: TextStyle(
+              fontSize: 28,
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SearchPage()),
+            );
+          },
+          child: Hero(
+            tag: 'iconSearch',
+            child: Icon(
+              Icons.search,
+              size: 36,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 class WidgetCategoryNews extends StatefulWidget {
   final List<CategoryNewsModel> listCategories;
   final int indexDefaultSelected;
@@ -126,7 +120,7 @@ class _WidgetCategoryNewsState extends State<WidgetCategoryNews> {
     return SizedBox(
       height: 100,
       child: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 48),
+        padding: EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           var itemCategory = widget.listCategories[index];
@@ -195,14 +189,25 @@ class _WidgetCategoryNewsState extends State<WidgetCategoryNews> {
   }
 }
 
-Widget _buildWidgetContentNewsAndroid() {
-     var listArticles = <Articles>[];
+Widget _buildWidgetContentNewsAndroid(BuildContext context) {
+
+     String? error = context.watch<NewsLogic>().error;
+     if(error != null){
+       debugPrint("Error: $error");
+       return Center(child: Text("Something went wrong"),);
+     }
+
+     TopHeadlineNews? data = context.watch<NewsLogic>().topHeadlineNews;
+     if(data == null){
+       return SizedBox();
+     }
+
      return Stack(
         children: <Widget>[
           ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 48),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             itemBuilder: (context, index) {
-              var itemArticle = listArticles[index];
+              var itemArticle = data.articles![index];
               var dateTimePublishedAt = DateFormat('yyyy-MM-ddTHH:mm:ssZ').parse(itemArticle.publishedAt??"", true);
               var strPublishedAt = DateFormat('MMM dd, yyyy HH:mm').format(dateTimePublishedAt);
               if (index == 0) {
@@ -211,10 +216,10 @@ Widget _buildWidgetContentNewsAndroid() {
                 return _buildWidgetItemNews(index, itemArticle, strPublishedAt);
               }
             },
-            itemCount: listArticles.length,
+            itemCount: data.articles!.length,
           )
         ],
-      );
+     );
 }
 
 Widget _buildWidgetItemNews(
@@ -250,7 +255,7 @@ Widget _buildWidgetItemLatestNews(
     // },
     child: Container(
       width: double.infinity,
-      height: 200,
+      height: 250,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         image: DecorationImage(
@@ -264,7 +269,7 @@ Widget _buildWidgetItemLatestNews(
         children: <Widget>[
           Container(
             width: double.infinity,
-            height: 200,
+            height: 250,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
               gradient: LinearGradient(
@@ -280,7 +285,7 @@ Widget _buildWidgetItemLatestNews(
                 ],
               ),
             ),
-            padding: EdgeInsets.all(48),
+            padding: EdgeInsets.all(16),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,14 +296,14 @@ Widget _buildWidgetItemLatestNews(
                     borderRadius: BorderRadius.circular(48),
                   ),
                   padding: EdgeInsets.symmetric(
-                    horizontal: 28,
+                    horizontal: 18,
                     vertical: 14,
                   ),
                   child: Text(
                     'Latest News',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 28,
+                      fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -308,7 +313,7 @@ Widget _buildWidgetItemLatestNews(
                   itemArticle.title??"",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 42,
+                    fontSize: 16,
                   ),
                 ),
                 Row(
@@ -318,21 +323,21 @@ Widget _buildWidgetItemLatestNews(
                       strPublishedAt,
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 24,
+                        fontSize: 16,
                       ),
                     ),
                     Text(
                       ' | ',
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 28,
+                        fontSize: 16,
                       ),
                     ),
                     Text(
                       itemArticle.source!.name??"",
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 24,
+                        fontSize: 16,
                       ),
                     ),
                   ],
@@ -362,7 +367,7 @@ class _WidgetDateTodayState extends State<WidgetDateToday> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 48),
+      padding: EdgeInsets.symmetric(horizontal: 16),
       child: Text(
         strToday,
         style: TextStyle(

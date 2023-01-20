@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:news_flutter/logics/news_logic.dart';
 import 'package:news_flutter/screens/home.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -11,21 +13,16 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   _init() async {
     //await context.read<RandomUserLogic>().read();
-
+    await context.read<NewsLogic>().read();
     Future.delayed(Duration(seconds: 3), () {
-      // if (mounted) {
-      //   print("Navigate");
-      //   Navigator.of(context).pushReplacement(
-      //     MaterialPageRoute(
-      //       builder: (context) => Home(),
-      //     ),
-      //   );
-      // }
+      if (mounted) {
+        print("Navigate");
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => Home(),
           ),
         );
+      }
 
     });
   }
