@@ -130,15 +130,20 @@ class _WidgetCategoryNewsState extends State<WidgetCategoryNews> {
               right: index == widget.listCategories.length - 1 ? 0 : 6,
             ),
             child: GestureDetector(
-              onTap: () {
+              onTap: () async {
+                print("index = $indexCategorySelected");
                 if (indexCategorySelected == index) {
                   return;
+                }else{
+                  String category = widget.listCategories[index].title.toLowerCase();
+                  if(index == 0){
+                    category="";
+                  }
+                  context.read<NewsLogic>().setLoading(true);
+                  context.read<NewsLogic>().read(category: category);
                 }
                 setState(() => indexCategorySelected = index);
-                // var topHeadlinesNewsBloc = BlocProvider.of<TopHeadlinesNewsBloc>(context);
-                // topHeadlinesNewsBloc.add(
-                //   ChangeCategoryTopHeadlinesNewsEvent(indexCategorySelected: index),
-                // );
+
               },
               child: Container(
                 child: AnimatedContainer(
@@ -190,36 +195,52 @@ class _WidgetCategoryNewsState extends State<WidgetCategoryNews> {
 }
 
 Widget _buildWidgetContentNewsAndroid(BuildContext context) {
+     bool isLoading = context.watch<NewsLogic>().isLoading;
+     print("isloading $isLoading");
+     if(isLoading){
+       return Center(child: CircularProgressIndicator(
+         color: Colors.greenAccent, //<-- SEE HERE
+         backgroundColor: Colors.grey, //<-- SEE HERE
+       ),);
+     }
 
      String? error = context.watch<NewsLogic>().error;
      if(error != null){
        debugPrint("Error: $error");
        return Center(child: Text("Something went wrong"),);
      }
-
      TopHeadlineNews? data = context.watch<NewsLogic>().topHeadlineNews;
-     if(data == null){
-       return SizedBox();
+     print(data!.articles!.length);
+
+     if(data == null || data.articles!.length == 0){
+       return Center(
+         child: CircularProgressIndicator(
+           color: Colors.greenAccent, //<-- SEE HERE
+           backgroundColor: Colors.grey, //<-- SEE HERE
+         ),
+       );
      }
 
-     return Stack(
-        children: <Widget>[
-          ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            itemBuilder: (context, index) {
-              var itemArticle = data.articles![index];
-              var dateTimePublishedAt = DateFormat('yyyy-MM-ddTHH:mm:ssZ').parse(itemArticle.publishedAt??"", true);
-              var strPublishedAt = DateFormat('MMM dd, yyyy HH:mm').format(dateTimePublishedAt);
-              if (index == 0) {
-                return _buildWidgetItemLatestNews(itemArticle, strPublishedAt);
-              } else {
-                return _buildWidgetItemNews(index, itemArticle, strPublishedAt);
-              }
-            },
-            itemCount: data.articles!.length,
-          )
-        ],
-     );
+
+
+       return Stack(
+         children: <Widget>[
+           ListView.builder(
+             padding: EdgeInsets.symmetric(horizontal: 16),
+             itemBuilder: (context, index) {
+               var itemArticle = data.articles![index];
+               var dateTimePublishedAt = DateFormat('yyyy-MM-ddTHH:mm:ssZ').parse(itemArticle.publishedAt??"", true);
+               var strPublishedAt = DateFormat('MMM dd, yyyy HH:mm').format(dateTimePublishedAt);
+               if (index == 0) {
+                 return _buildWidgetItemLatestNews(itemArticle, strPublishedAt);
+               } else {
+                 return _buildWidgetItemNews(index, itemArticle, strPublishedAt);
+               }
+             },
+             itemCount: data.articles!.length,
+           )
+         ],
+       );
 }
 
 Widget _buildWidgetItemNews(
@@ -333,11 +354,21 @@ Widget _buildWidgetItemLatestNews(
                         fontSize: 16,
                       ),
                     ),
-                    Text(
-                      itemArticle.source!.name??"",
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
+                    // Text(
+                    //   itemArticle.source!.name??"",
+                    //   overflow: TextOverflow.ellipsis,
+                    //   style: TextStyle(
+                    //     color: Colors.grey,
+                    //     fontSize: 16,
+                    //   ),
+                    // ),
+                    Flexible(
+                      child: RichText(
+                        overflow: TextOverflow.ellipsis,
+                        strutStyle: StrutStyle(fontSize: 16.0),
+                        text: TextSpan(
+                            style: TextStyle(color: Colors.grey),
+                            text: itemArticle.source!.name??""),
                       ),
                     ),
                   ],

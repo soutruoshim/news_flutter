@@ -4,11 +4,17 @@ import 'package:http/http.dart' as http;
 import '../models/top_head_line.dart';
 
 class NewsService{
-  Future<TopHeadlineNews?> getData({required void Function(String) onError}) async {
-    const String url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=e5eeb5ab26c44f85865f0bcf84cb374e";
+  Future<TopHeadlineNews?> getData({required void Function(String) onError, String category="", String query=""}) async {
+    String url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=d65daf66354a482688780bf36d80d419";
+    if(category!=""){
+      url = "https://newsapi.org/v2/top-headlines?country=us&apiKey=d65daf66354a482688780bf36d80d419&category=$category";
+    }
+    if(query!=""){
+      url = "https://newsapi.org/v2/everything?apiKey=d65daf66354a482688780bf36d80d419&q=$query";
+    }
     try{
       http.Response response = await http.get(Uri.parse(url));
-      print(response);
+      print(url);
       return compute(_getData, response.body);
     }catch(e){
       onError(e.toString());

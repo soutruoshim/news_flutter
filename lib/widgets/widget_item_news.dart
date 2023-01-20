@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:news_flutter/pages/details_page.dart';
 
 import '../models/top_head_line.dart';
 
@@ -24,6 +25,11 @@ class WidgetItemNews extends StatelessWidget {
         //     content: Text('Couldn\'t open detail news'),
         //   ));
         // }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DetailsPage(newsDetails: itemArticle)),
+        );
       },
       child: SizedBox(
         height: 100,

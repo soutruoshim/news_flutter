@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
+import '../logics/news_logic.dart';
 import '../models/top_head_line.dart';
 import '../widgets/widget_item_news.dart';
 
@@ -13,10 +15,8 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-
   final controllerKeyword = TextEditingController();
   final focusNodeIconSearch = FocusNode();
-
 
   @override
   void initState() {
@@ -36,171 +36,142 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var isDarkTheme = theme.brightness == Brightness.dark;
-    var listArticles = <Articles>[
-      Articles(
-          source: Source(id: "1", name: "CBC"),
-          author: "Leslie Josephs",
-          title: "FAA says contractor unintentionally deleted files before outage disrupted thousands of flights - CNBC",
-          description: "Around 10,000 flights were delayed because of the outage of a pilot-alerting system.",
-          url: "https://www.cnbc.com/2023/01/20/faa-outage-that-delayed-thousands-of-flights-caused-by-contractor-who-deleted-files.html",
-          urlToImage: "https://image.cnbcfm.com/api/v1/image/107177181-1673449421857-gettyimages-1246152990-AFP_336V6W3.jpeg?v=1674179028&w=1920&h=1080",
-          publishedAt: "2023-01-20T01:43:00Z",
-          content: "The Federal Aviation Administration said Thursday that a contractor unintentionally deleted files before an outage of a pilot-alert system that delayed thousands of flights last week.\r\n\"A preliminary… [+1355 chars]"
-      ),
-      Articles(
-          source: Source(id: "1", name: "CBC"),
-          author: "Leslie Josephs",
-          title: "FAA says contractor unintentionally deleted files before outage disrupted thousands of flights - CNBC",
-          description: "Around 10,000 flights were delayed because of the outage of a pilot-alerting system.",
-          url: "https://www.cnbc.com/2023/01/20/faa-outage-that-delayed-thousands-of-flights-caused-by-contractor-who-deleted-files.html",
-          urlToImage: "https://image.cnbcfm.com/api/v1/image/107177181-1673449421857-gettyimages-1246152990-AFP_336V6W3.jpeg?v=1674179028&w=1920&h=1080",
-          publishedAt: "2023-01-20T01:43:00Z",
-          content: "The Federal Aviation Administration said Thursday that a contractor unintentionally deleted files before an outage of a pilot-alert system that delayed thousands of flights last week.\r\n\"A preliminary… [+1355 chars]"
-      ),
-      Articles(
-          source: Source(id: "1", name: "CBC"),
-          author: "Leslie Josephs",
-          title: "FAA says contractor unintentionally deleted files before outage disrupted thousands of flights - CNBC",
-          description: "Around 10,000 flights were delayed because of the outage of a pilot-alerting system.",
-          url: "https://www.cnbc.com/2023/01/20/faa-outage-that-delayed-thousands-of-flights-caused-by-contractor-who-deleted-files.html",
-          urlToImage: "https://image.cnbcfm.com/api/v1/image/107177181-1673449421857-gettyimages-1246152990-AFP_336V6W3.jpeg?v=1674179028&w=1920&h=1080",
-          publishedAt: "2023-01-20T01:43:00Z",
-          content: "The Federal Aviation Administration said Thursday that a contractor unintentionally deleted files before an outage of a pilot-alert system that delayed thousands of flights last week.\r\n\"A preliminary… [+1355 chars]"
-      ),
-      Articles(
-          source: Source(id: "1", name: "CBC"),
-          author: "Leslie Josephs",
-          title: "FAA says contractor unintentionally deleted files before outage disrupted thousands of flights - CNBC",
-          description: "Around 10,000 flights were delayed because of the outage of a pilot-alerting system.",
-          url: "https://www.cnbc.com/2023/01/20/faa-outage-that-delayed-thousands-of-flights-caused-by-contractor-who-deleted-files.html",
-          urlToImage: "https://image.cnbcfm.com/api/v1/image/107177181-1673449421857-gettyimages-1246152990-AFP_336V6W3.jpeg?v=1674179028&w=1920&h=1080",
-          publishedAt: "2023-01-20T01:43:00Z",
-          content: "The Federal Aviation Administration said Thursday that a contractor unintentionally deleted files before an outage of a pilot-alert system that delayed thousands of flights last week.\r\n\"A preliminary… [+1355 chars]"
-      ),
-      Articles(
-          source: Source(id: "1", name: "CBC"),
-          author: "Leslie Josephs",
-          title: "FAA says contractor unintentionally deleted files before outage disrupted thousands of flights - CNBC",
-          description: "Around 10,000 flights were delayed because of the outage of a pilot-alerting system.",
-          url: "https://www.cnbc.com/2023/01/20/faa-outage-that-delayed-thousands-of-flights-caused-by-contractor-who-deleted-files.html",
-          urlToImage: "https://image.cnbcfm.com/api/v1/image/107177181-1673449421857-gettyimages-1246152990-AFP_336V6W3.jpeg?v=1674179028&w=1920&h=1080",
-          publishedAt: "2023-01-20T01:43:00Z",
-          content: "The Federal Aviation Administration said Thursday that a contractor unintentionally deleted files before an outage of a pilot-alert system that delayed thousands of flights last week.\r\n\"A preliminary… [+1355 chars]"
-      ),
-      Articles(
-          source: Source(id: "1", name: "CBC"),
-          author: "Leslie Josephs",
-          title: "FAA says contractor unintentionally deleted files before outage disrupted thousands of flights - CNBC",
-          description: "Around 10,000 flights were delayed because of the outage of a pilot-alerting system.",
-          url: "https://www.cnbc.com/2023/01/20/faa-outage-that-delayed-thousands-of-flights-caused-by-contractor-who-deleted-files.html",
-          urlToImage: "https://image.cnbcfm.com/api/v1/image/107177181-1673449421857-gettyimages-1246152990-AFP_336V6W3.jpeg?v=1674179028&w=1920&h=1080",
-          publishedAt: "2023-01-20T01:43:00Z",
-          content: "The Federal Aviation Administration said Thursday that a contractor unintentionally deleted files before an outage of a pilot-alert system that delayed thousands of flights last week.\r\n\"A preliminary… [+1355 chars]"
-      ),
+    bool isLoading = context.watch<NewsLogic>().isLoading;
 
-    ];
+    // if(isLoading){
+    //   return Center(child: CircularProgressIndicator(
+    //     color: Colors.greenAccent, //<-- SEE HERE
+    //     backgroundColor: Colors.grey, //<-- SEE HERE
+    //   ),);
+    // }
+    //
+    // String? error = context.watch<NewsLogic>().error;
+    // if(error != null){
+    //   debugPrint("Error: $error");
+    //   return Center(child: Text("Something went wrong"),);
+    // }
+
+    TopHeadlineNews? data = context.watch<NewsLogic>().topHeadlineNews;
+    print(data!.articles!.length);
+
     return Scaffold(
-      body: Container(child: Stack(
-      children: [
-      Container(
-      width: double.infinity,
-        height: double.infinity,
-        color: isDarkTheme ? null : Color(0xFFEFF5F5),
-      ),
-      SafeArea(
-        child: Container(
-          color: isDarkTheme ? null : Color(0xFFEFF5F5),
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(
-            vertical: 24,
-            horizontal: 48,
+        body: Container(
+      child: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            color: isDarkTheme ? null : Color(0xFFEFF5F5),
           ),
-          child: Column(
-            children: <Widget>[
-              Row(
+          SafeArea(
+            child: Container(
+              color: isDarkTheme ? null : Color(0xFFEFF5F5),
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                vertical: 16,
+                horizontal: 16,
+              ),
+              child: Column(
                 children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Icon(
-                      Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
-                    ),
-                  ),
-                  SizedBox(width: 24),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(99.0),
+                  Row(
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          context.read<NewsLogic>().setLoading(false);
+                          Navigator.pop(context);
+                        },
+                        child: Icon(
+                          Platform.isIOS
+                              ? Icons.arrow_back_ios
+                              : Icons.arrow_back,
+                        ),
                       ),
-                      padding: EdgeInsets.symmetric(horizontal: 36),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: TextField(
-                              controller: controllerKeyword,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                hintText: 'Searching something?',
-                                hintStyle: TextStyle(
-                                  fontSize: 36,
-                                  color: Colors.grey,
+                      SizedBox(width: 18),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(99.0),
+                          ),
+                          padding: EdgeInsets.symmetric(horizontal: 24),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: TextField(
+                                  controller: controllerKeyword,
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    hintText: 'Searching something?',
+                                    hintStyle: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.grey,
+                                    ),
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
                                 ),
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
                               ),
-                              style: TextStyle(
-                                fontSize: 36,
+                              Hero(
+                                tag: 'iconSearch',
+                                child: Focus(
+                                  focusNode: focusNodeIconSearch,
+                                  child: Icon(
+                                    Icons.search,
+                                    size: 24,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                          Hero(
-                            tag: 'iconSearch',
-                            child: Focus(
-                              focusNode: focusNodeIconSearch,
-                              child: Icon(
-                                Icons.search,
-                                size: 48,
-                              ),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
+                  SizedBox(height: 16),
+                  Expanded(
+                      child: isLoading
+                          ? Center(
+                              child: CircularProgressIndicator(
+                              color: Colors.greenAccent, //<-- SEE HERE
+                              backgroundColor: Colors.grey, //<-- SEE HERE
+                            ))
+                          : ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemBuilder: (context, index) {
+                                var itemArticle = data.articles![index];
+                                var dateTimePublishedAt =
+                                    DateFormat('yyy-MM-ddTHH:mm:ssZ').parse(
+                                        itemArticle.publishedAt ?? "", true);
+                                var strPublishedAt =
+                                    DateFormat('MMM dd, yyyy HH:mm')
+                                        .format(dateTimePublishedAt);
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  child: WidgetItemNews(
+                                    itemArticle: itemArticle,
+                                    strPublishedAt: strPublishedAt,
+                                  ),
+                                );
+                              },
+                              itemCount: data.articles!.length,
+                            )),
                 ],
               ),
-              SizedBox(height: 16),
-              Expanded(
-                child:ListView.builder(
-                padding: EdgeInsets.zero,
-                itemBuilder: (context, index) {
-                  var itemArticle = listArticles[index];
-                  var dateTimePublishedAt =
-                  DateFormat('yyy-MM-ddTHH:mm:ssZ').parse(itemArticle.publishedAt??"", true);
-                  var strPublishedAt = DateFormat('MMM dd, yyyy HH:mm').format(dateTimePublishedAt);
-                  return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child: WidgetItemNews(
-                      itemArticle: itemArticle,
-                      strPublishedAt: strPublishedAt,
-                    ),
-                  );
-                },
-                itemCount: listArticles.length,
-                )
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
-      ],
-    ),)
-    );
+    ));
   }
 
   void _onSearching() {
-
+    var keyword = controllerKeyword.text.trim();
+    if (!keyword.isEmpty) {
+      context.read<NewsLogic>().setLoading(true);
+      context.read<NewsLogic>().read(query: keyword);
+    }
   }
 }
