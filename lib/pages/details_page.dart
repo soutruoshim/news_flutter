@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:news_flutter/models/top_head_line.dart';
 
+import '../db/db_helper.dart';
+
 class DetailsPage extends StatefulWidget {
 
   final Articles? newsDetails;
@@ -19,10 +21,13 @@ class DetailsPageState extends State<DetailsPage> {
   bool isFollowing = false;
   bool isBookmark = false;
   bool isDarkTheme = false;
+  String title = "";
   @override
   void initState() {
     super.initState();
     init();
+    title = widget.newsDetails!.title??"";
+    _getItem(title);
   }
 
   Future<void> init() async {
@@ -32,6 +37,46 @@ class DetailsPageState extends State<DetailsPage> {
   @override
   void setState(fn) {
     if (mounted) super.setState(fn);
+  }
+  void _getItem(String title) async {
+    final data = await SQLHelper.getItem(title);
+    //print(data);
+    if(data.length > 0){
+      setState(() {
+        isBookmark = true;
+      });
+    }else{
+      setState(() {
+        isBookmark = false;
+      });
+    }
+  }
+  Future<void> _addItem() async {
+
+    await SQLHelper.createItem(
+        widget.newsDetails!.source!.name??"",
+        widget.newsDetails!.author??"",
+        widget.newsDetails!.title??"",
+        widget.newsDetails!.description??"",
+        widget.newsDetails!.url??"",
+        widget.newsDetails!.urlToImage??"",
+        widget.newsDetails!.publishedAt??"",
+        widget.newsDetails!.content??""
+       );
+
+    // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //   content: Text('Bookmark has been added.'),
+    // ));
+    setState(() {
+      isBookmark = true;
+    });
+  }
+
+  void _deleteItem(String title) async {
+    await SQLHelper.deleteItem(title);
+    setState(() {
+      isBookmark = false;
+    });
   }
 
   @override
@@ -76,31 +121,7 @@ class DetailsPageState extends State<DetailsPage> {
                                   Expanded(
                                     child: Text("Detail", style: TextStyle(fontSize: 20),)
                                   ),
-                                  Hero(
-                                    tag: 'iconSearch',
-                                      child: isBookmark ? IconButton(
-                                        icon: Icon(Icons.bookmark),
-                                        onPressed: () {
-                                          setState(
-                                                () {
-                                              isBookmark = !isBookmark;
-                                            },
-                                          );
-                                          //toasty(context, 'Removed from Bookmark');
-                                        },
-                                      )
-                                          : IconButton(
-                                        icon: Icon(Icons.bookmark_outline),
-                                        onPressed: () {
-                                          setState(
-                                                () {
-                                              isBookmark = !isBookmark;
-                                            },
-                                          );
-                                          //toasty(context, 'Added to Bookmark');
-                                        },
-                                      ),
-                                    ),
+                                  IconButton(onPressed: ()=> isBookmark?_deleteItem(title):_addItem(), icon: isBookmark? Icon(Icons.bookmark):Icon(Icons.bookmark_outline)),
                                 ],
                               ),
                             ),
