@@ -16,4 +16,8 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 ## Demo Screen
+<img src='https://raw.githubusercontent.com/soutruoshim/news_flutter/main/screenshort/1.jpg' width="200">
+<img src='https://raw.githubusercontent.com/soutruoshim/news_flutter/main/screenshort/2.jpg' width="200">
+<img src='https://raw.githubusercontent.com/soutruoshim/news_flutter/main/screenshort/3.jpg' width="200">
+<img src='https://raw.githubusercontent.com/soutruoshim/news_flutter/main/screenshort/4.jpg' width="200">
 
